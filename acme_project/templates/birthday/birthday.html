@@ -2,20 +2,35 @@
 {% load django_bootstrap5 %}
 
 {% block content %}
-  <div class="card col-4">
-    <div class="card-header">
-      Калькулятор ожидания дня рождения
+  {% with data=form.instance %}
+    {% if '/edit/' in request.path %}
+      <h1>Редактировать запись {{ data.id }}</h1>
+    {% elif '/delete/' in request.path %}
+      <h1>Удалить запись {{ data.id }}</h1>
+    {% else %}
+      <h1>Создать запись</h1>
+    {% endif %}
+    <div class="card col-4">
+      <div class="card-header">
+        Калькулятор ожидания дня рождения
+      </div>
+      <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+              {% if not '/delete/' in request.path %}
+                {% bootstrap_form form %}
+              {% else %}
+                <p>{{ data.first_name }} {{ data.last_mane}}</p>
+                <p>{{ data.birthday }}</p>
+              {% endif %}
+            {% bootstrap_button button_type='submit' content='Отправить' %}
+        </form>
+      </div>
     </div>
-    <div class="card-body">
-      <form>
-          {% bootstrap_form form %}
-          {% bootstrap_button button_type='submit' content='Отправить' %}
-      </form>
-    </div>
-  </div>
-  {% with data=request.GET %}
     {% if form.is_valid %}
-      <h2>Привет, {{ data.first_name}} {{ data.last_name }} </h2>
+      ID новой записи: {{ form.instance.id }}
+      <hr>
+      <h2>Привет, {{ data.first_name }} {{ data.last_mane }} </h2>
       {% if birthday_countdown == 0 %}
         С днём рождения!
       {% else %}
