@@ -1,8 +1,6 @@
 from django.db import models
-from django.core.validators import (
-    MaxValueValidator,
-    MinValueValidator
-)
+
+from .validators import real_age
 
 
 class Birthday(models.Model):
@@ -17,5 +15,6 @@ class Birthday(models.Model):
         help_text='Необязательное поле'
     )
     birthday = models.DateField(
-        verbose_name='Дата рождения'
+        verbose_name='Дата рождения',
+        validators=(real_age,),
     )
